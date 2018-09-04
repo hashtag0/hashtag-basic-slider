@@ -1,6 +1,8 @@
 # hashtag-basic-slider
 Simple yet nice react Slideshow Component
 
+demo: [http://dev.mariasturm.com/projects/be-good/info](http://dev.mariasturm.com/projects/be-good/info)
+
 # Usage
 ~~~
 import React from 'react';
@@ -18,15 +20,15 @@ export default class MyApp extends React.Component {
 
         return (
                 <HashtagSlider { ...settings }>
-                    <div>
-                    	first slide
-                    </div>
-					<div>
-						second slide
-					</div>
-					<div>
-						third slide
-					</div>
+			<div>
+				first slide
+			</div>
+			<div>
+				second slide
+			</div>
+			<div>
+				third slide
+			</div>
                 </HashtagSlider>
         );
 	}
@@ -36,7 +38,7 @@ export default class MyApp extends React.Component {
 
 # Settings
 ~~~
-speed			: Define the speed of slide animation -> 0 for no animation
+speed		: Define the speed of slide animation -> 0 for no animation
 initialSlide   	: Define where to start
 infinite       	: loop / go back to slide 1 after last slide
 draggable      	: disable touch/drag
@@ -51,6 +53,6 @@ onInit         	: callback after Slideshow initialization
 
 # Methos
 ~~~
-nextSlide		: go to next Slide
-prevSlide		: go to previous Slide
+nextSlide	: go to next Slide
+prevSlide	: go to previous Slide
 ~~~
