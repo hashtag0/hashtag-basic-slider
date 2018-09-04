@@ -81,6 +81,11 @@ export default class HashtagSlider extends React.Component {
      * @return {Object} event
      */
     unify = ( event ) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
         return event.changedTouches ? event.changedTouches[ 0 ] : event;
     }
 
@@ -90,6 +95,14 @@ export default class HashtagSlider extends React.Component {
      * @param {Object} event
      */
     lock = ( event ) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        const trackRef = this.trackRef.current;
+        trackRef.style.transition = 'none';
+
         x0 = this.unify( event ).clientX;
     }
 
@@ -100,18 +113,36 @@ export default class HashtagSlider extends React.Component {
      * @param {Object} event
      */
     move = ( event ) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
         const trackRef = this.trackRef.current;
-        const dragThreshold = trackRef.parentNode.clientWidth / 4;
+        const dragThreshold = ( trackRef.parentNode.clientWidth / 4 ) < 600 ?
+            trackRef.parentNode.clientWidth / 4 : 600;
+
+        const { speed } = this.props;
+        trackRef.style.transition = `transform ${speed}ms`;
+
 
         if ( x0 || x0 === 0 ) {
-            const dx = this.unify( event ).clientX - x0;
+            const mouseX = this.unify( event ).clientX;
+            const dx = mouseX - x0;
             const direction = Math.sign( dx );
-
             const positiveDx = dx > 0 ? dx : dx * -1;
+            const centerX = trackRef.parentNode.clientWidth / 2;
 
+            // If slide was dragged over threshold
             if ( positiveDx > dragThreshold ) {
                 if ( direction < 0 ) this.nextSlide();
                 if ( direction > 0 ) this.prevSlide();
+            } else if ( dx === 0 ) { // if slideshow was just clicked
+                if ( mouseX > centerX ) {
+                    this.nextSlide();
+                } else {
+                    this.prevSlide();
+                }
             } else {
                 trackRef.style.transform = `translateX(${trackOffsetLeft}px)`;
             }
@@ -130,6 +161,8 @@ export default class HashtagSlider extends React.Component {
         const trackRef = this.trackRef.current;
 
         event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
 
         if ( ( x0 || x0 === 0 ) && trackRef ) {
 
@@ -139,6 +172,14 @@ export default class HashtagSlider extends React.Component {
 
             trackRef.style.transform = `translateX(${tempTrackOffsetLeft}px)`;
         }
+    }
+
+    handleClick = ( event ) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
     }
 
     componentDidMount() {
@@ -169,6 +210,7 @@ export default class HashtagSlider extends React.Component {
 
         // If draggable is enabled, add events
         if ( draggable ) {
+            trackRef.addEventListener( 'click', this.handleClick, false );
             trackRef.addEventListener( 'mousedown', this.lock, false );
             trackRef.addEventListener( 'touchstart', this.lock, false );
 
@@ -262,12 +304,14 @@ export default class HashtagSlider extends React.Component {
             width       : '100%',
             height      : '100%',
             overflow    : 'hidden',
+            userSelect  : 'none',
         };
 
         const trackStyles = {
             transition      : `transform ${speed}ms`,
             display         : 'flex',
             height          : '100%',
+            userSelect      : 'none',
         };
 
         return (
